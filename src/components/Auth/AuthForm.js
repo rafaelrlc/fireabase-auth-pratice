@@ -2,11 +2,12 @@ import { useState } from "react";
 import classes from "./AuthForm.module.css";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import userValidationSchema from "../validation/userData";
-import api from "../../services/api";
+import userValidationSchema from "../../validation/userData";
+
 import axios from "axios";
 
 const key = "AIzaSyA_JQ06cuajLFsd8wKNp9OVbc3dejuW3eM";
+
 const config = {
   headers: {
     "Content-Type": "application/json",
@@ -28,23 +29,25 @@ const AuthForm = () => {
   };
 
   const submitHandler = async (data) => {
-    reset();
+    const params = {
+      email: data.userEmail,
+      password: data.userPassword,
+      returnSecureToken: true,
+    };
 
     if (isLogin) {
       //
     } else {
       try {
         const response = await axios.post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=AIzaSyA_JQ06cuajLFsd8wKNp9OVbc3dejuW3eM",
-          {
-            email: data.userEmail,
-            password: data.userPassword,
-            returnSecureToken: true,
-          }
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,
+          params,
+          config
         );
+
         console.log(response);
-      } catch (err) {
-        console.log(`Axios request failed : ${err}`);
+      } catch (error) {
+        console.log(error.response.data.error);
       }
     }
   };
