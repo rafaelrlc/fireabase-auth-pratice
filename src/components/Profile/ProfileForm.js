@@ -34,8 +34,6 @@ const ProfileForm = () => {
       returnSecureToken: true,
     };
 
-    console.log(params);
-
     console.log(data);
     try {
       const response = api.post(url, params, config);
