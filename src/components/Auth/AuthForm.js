@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import classes from "./AuthForm.module.css";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import userValidationSchema from "../../validation/userData";
-
-import axios from "axios";
-
-const key = "AIzaSyA_JQ06cuajLFsd8wKNp9OVbc3dejuW3eM";
+import AuthContext from "../../store/auth-context";
+import api from "../../services/api";
+import { key } from "../../services/api";
 
 const config = {
   headers: {
@@ -16,7 +15,7 @@ const config = {
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-
+  const authCtx = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -35,21 +34,21 @@ const AuthForm = () => {
       returnSecureToken: true,
     };
 
-    if (isLogin) {
-      //
-    } else {
-      try {
-        const response = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,
-          params,
-          config
-        );
+    let url = `accounts:signUp?key=${key}`;
 
-        console.log(response);
-      } catch (error) {
-        console.log(error.response.data.error);
-      }
+    if (isLogin) {
+      url = `accounts:signInWithPassword?key=${key}`;
     }
+
+    try {
+      const response = await api.post(url, params, config);
+      console.log(response);
+      authCtx.login(response.data.idToken);
+    } catch (error) {
+      console.log(error.response.data.error);
+    }
+
+    //reset()
   };
 
   return (
@@ -58,7 +57,7 @@ const AuthForm = () => {
       <form onSubmit={handleSubmit(submitHandler)}>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" {...register("userEmail")} />
+          <input type="text" id="email" {...register("userEmail")} />
           {errors.userEmail && (
             <p className={classes.error_message}>{errors.userEmail.message}</p>
           )}
@@ -73,9 +72,9 @@ const AuthForm = () => {
           )}
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? "Login" : "Create Account"}</button>
+          <button type="submit">{isLogin ? "Login" : "Create Account"}</button>
           <button
-            type="submit"
+            type="button"
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
