@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import { key } from "../../services/api";
-
+import { useNavigate } from "react-router-dom";
 const config = {
   headers: {
     "Content-Type": "application/json",
@@ -22,6 +22,7 @@ const ProfileForm = () => {
   } = useForm({
     resolver: yupResolver(userChangePasswordSchema),
   });
+  const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
 
@@ -38,6 +39,7 @@ const ProfileForm = () => {
     try {
       const response = api.post(url, params, config);
       console.log(response);
+      navigate("/");
     } catch (error) {
       console.log(error.response.data.error);
     }

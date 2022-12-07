@@ -6,6 +6,7 @@ import userValidationSchema from "../../validation/userData";
 import AuthContext from "../../store/auth-context";
 import api from "../../services/api";
 import { key } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const config = {
   headers: {
@@ -22,6 +23,7 @@ const AuthForm = () => {
     reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(userValidationSchema) });
+  const navigate = useNavigate();
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -44,6 +46,7 @@ const AuthForm = () => {
       const response = await api.post(url, params, config);
       console.log(response);
       authCtx.login(response.data.idToken);
+      navigate("/");
     } catch (error) {
       console.log(error.response.data.error);
     }

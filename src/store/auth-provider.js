@@ -4,7 +4,7 @@ import AuthContext from "./auth-context";
 const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
 
-  const UserIsLoggedIn = !!token;
+  const userIsLoggedIn = !!token;
 
   const loginHandler = (token) => {
     setToken(token);
@@ -15,8 +15,8 @@ const AuthContextProvider = (props) => {
   };
 
   const contextValue = {
-    token: token,
-    isLoggedIn: UserIsLoggedIn,
+    JWT: token,
+    isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
   };
