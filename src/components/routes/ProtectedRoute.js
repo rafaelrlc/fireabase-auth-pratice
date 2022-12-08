@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReactFragment } from "react";
 
 const ProtectedRoute = (props) => {
   const navigate = useNavigate();
+
   useEffect(() => {
     if (props.JWT === null) {
       navigate("/");
@@ -17,11 +17,7 @@ const ProtectedRoute = (props) => {
       </div>
     );
   } else {
-    return (
-      <ReactFragment>
-        <div>{props.children}</div>
-      </ReactFragment>
-    );
+    return <div>{props.children}</div>;
   }
 };
 

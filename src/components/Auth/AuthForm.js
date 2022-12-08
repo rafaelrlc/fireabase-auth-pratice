@@ -45,7 +45,10 @@ const AuthForm = () => {
     try {
       const response = await api.post(url, params, config);
       console.log(response);
-      authCtx.login(response.data.idToken);
+      const expirationTime = new Date(
+        new Date().getTime() + +response.data.expiresIn * 1000
+      );
+      authCtx.login(response.data.idToken, expirationTime.toISOString());
       navigate("/");
     } catch (error) {
       console.log(error.response.data.error);
